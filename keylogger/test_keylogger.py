@@ -113,6 +113,11 @@ def test_log_manager():
         content = manager.get_current_log_content()
         assert "key_0" in content or "key_9" in content
 
+        # Close handlers before exiting to avoid Windows file lock issues
+        for handler in manager.logger.handlers[:]:
+            handler.close()
+            manager.logger.removeHandler(handler)
+
     print("✓ LogManager works")
 
 
@@ -185,6 +190,11 @@ def test_key_processing():
         key_str, key_type = keylogger._process_key(Key.space)
         assert key_str == "[SPACE]"
         assert key_type == KeyType.SPECIAL
+
+        # Close handlers before exiting to avoid Windows file lock issues
+        for handler in keylogger.log_manager.logger.handlers[:]:
+            handler.close()
+            keylogger.log_manager.logger.removeHandler(handler)
 
         print("✓ Key processing works")
 
